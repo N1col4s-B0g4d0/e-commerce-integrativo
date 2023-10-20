@@ -1,0 +1,25 @@
+# Entorno virtual
+env/
+
+# Archivos de registro y carpetas de registro
+*.log
+log/
+
+# Archivos de configuración local
+.env
+
+# Archivos generados automáticamente
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos específicos del sistema operativo
+.DS_Store
+Thumbs.db
+
+.swo
+.swp
+~
+Briefing.pdf
+Create A Food Website Design Using _ HTML & CSS.mp4
+URL_utilizadas.txt
