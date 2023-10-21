@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 import mercadopago
 
 app = Flask(__name__)
@@ -8,23 +8,75 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/carrito')
-def carrito():
-    return render_template('carrito.html', cart=cart)
-
-cart = {}
-@app.route('/agregar_al_carrito<int:producto_id>', methods=['POST'])
+carrito = {}
+@app.route('/agregar_al_carrito/<int:producto_id>', methods=['POST'])
 def agregar_al_carrito(producto_id):
-    data = request.get_json()  # Obtén los datos JSON enviados desde JavaScript
-    nombre = data.get('nombre')
-    precio = data.get('precio')
-    
-    if producto_id not in cart:
-        cart[producto_id] = 1
-    else:
-        cart[producto_id] += 1
+    # Obtén la cantidad actual del producto en el carrito o establece en 0 si no existe
+    cantidad_actual = carrito.get(producto_id, 0)
 
-    return render_template('carrito.html', cart=cart)
+    # Incrementa la cantidad en 1
+    cantidad_actual += 1
+
+    # Actualiza el carrito con la nueva cantidad
+    carrito[producto_id] = cantidad_actual
+
+    # Redirige a la página de carrito
+    return redirect(url_for('ver_carrito'))
+
+@app.route('/ver_carrito', methods=['GET', 'POST'])
+def ver_carrito():
+    productos_en_carrito = []
+
+    for producto_id, cantidad in carrito.items():
+        if producto_id == 1:
+            nombre_producto = "Hamburguesa"
+            precio_producto = 3000
+        elif producto_id == 2:
+            nombre_producto = "Pizza"
+            precio_producto = 1000
+        elif producto_id == 3:
+            nombre_producto = "Refresco"
+            precio_producto = 1500
+
+        productos_en_carrito.append({
+            'id': producto_id,  # Agrega el ID del producto
+            'nombre': nombre_producto,
+            'precio': precio_producto,
+            'cantidad': cantidad
+        })
+
+    if request.method == 'POST':
+        producto_id = int(request.form.get('producto_id', -1))
+        action = request.form.get('action')
+        if producto_id != -1:
+            if action == 'sumar':
+                carrito[producto_id] += 1
+            elif action == 'restar':
+                if carrito[producto_id] > 0:
+                    carrito[producto_id] -= 1
+
+    return render_template('ver_carrito.html', productos=productos_en_carrito)
+
+@app.route('/actualizar_carrito', methods=['POST'])
+def actualizar_carrito():
+    producto_id = int(request.form.get('producto_id', -1))
+    action = request.form.get('action')
+
+    if producto_id != -1:
+        if producto_id in carrito:
+            if action == 'sumar':
+                carrito[producto_id] += 1
+            elif action == 'restar':
+                if carrito[producto_id] > 0:
+                    carrito[producto_id] -= 1
+        else:
+            # Si el producto no está en el carrito, agrégalo
+            carrito[producto_id] = 1
+
+    # Redirige de nuevo a la página del carrito
+    return redirect('/ver_carrito')
+
+
 
 
 @app.route('/eliminar_del_carrito/<int:producto_id>', methods=['POST'])
