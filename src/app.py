@@ -38,11 +38,14 @@ def ver_carrito():
             nombre_producto = "Refresco"
             precio_producto = 1500
 
+        precio_total_producto = precio_producto * cantidad  # Calcula el precio total del producto
+
         productos_en_carrito.append({
             'id': producto_id,  # Agrega el ID del producto
             'nombre': nombre_producto,
             'precio': precio_producto,
-            'cantidad': cantidad
+            'cantidad': cantidad,
+            'precio_total': precio_total_producto  # Agrega el precio total del producto
         })
 
     if request.method == 'POST':
@@ -55,7 +58,9 @@ def ver_carrito():
                 if carrito[producto_id] > 0:
                     carrito[producto_id] -= 1
 
-    return render_template('ver_carrito.html', productos=productos_en_carrito)
+    precio_total_carrito = sum(producto['precio_total'] for producto in productos_en_carrito)  # Calcula el precio total del carrito
+
+    return render_template('ver_carrito.html', productos=productos_en_carrito, precio_total_carrito=precio_total_carrito)
 
 @app.route('/actualizar_carrito', methods=['POST'])
 def actualizar_carrito():
