@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-import mercadopago
+from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response
+import json
 
 app = Flask(__name__)
 carrito = []
@@ -27,6 +27,28 @@ def agregar_al_carrito(nombre_producto, producto_id):
 @app.route('/ver_carrito', methods=['GET', 'POST'])
 def ver_carrito():
     productos_en_carrito = []
+    # Obtén la información de la compra almacenada en la cookie
+    compra_cookie = request.cookies.get('compra')
+    
+    # Si hay información de compra en la cookie, puedes procesarla y agregarla al carrito
+    if compra_cookie:
+        compra = json.loads(compra_cookie)
+        nombre_producto = compra['nombre_producto']
+        producto_id = compra['producto_id']
+        
+        # Realiza las operaciones necesarias en el carrito con esta información
+        producto_existente = next((producto for producto in carrito if producto['nombre'] == nombre_producto), None)
+        
+        if producto_existente:
+            producto_existente['cantidad'] += 1
+        else:
+            # Agrega el producto al carrito si no existe
+            carrito.append({'nombre': nombre_producto, 'producto_id': producto_id, 'cantidad': 1})
+
+        # Limpia la cookie después de procesar la compra
+        response = make_response(render_template('ver_carrito.html'))
+        response.delete_cookie('compra')
+        return response
 
     for item in carrito:
         producto_nombre = item['nombre']
@@ -98,6 +120,7 @@ def ver_carrito():
     precio_total_carrito = sum(item['precio_total'] for item in productos_en_carrito)
 
     return render_template('ver_carrito.html', productos=productos_en_carrito, precio_total_carrito=precio_total_carrito)
+
 
 @app.route('/actualizar_carrito', methods=['POST'])
 def actualizar_carrito():
