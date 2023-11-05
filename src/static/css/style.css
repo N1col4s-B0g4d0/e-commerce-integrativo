@@ -332,7 +332,7 @@ section .main_btn:hover i{
 }
 
 .menu .menu_box .menu_card .menu_info .menu_btn{
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
     text-decoration: none;

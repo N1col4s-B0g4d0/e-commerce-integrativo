@@ -3,85 +3,45 @@
 <head>
     <title>Carrito de Compras</title>
 </head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: white;
-        color: yellow;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    h1 {
-        background-color: yellow;
-        color: black;
-        text-align: center;
-        padding: 20px;
-        margin: 0;
-        width: 100%;
-    }
-
-    ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    li {
-        background-color: yellow;
-        color: black;
-        margin: 10px;
-        padding: 10px;
-        border: 2px solid black;
-        width: 80%;
-        max-width: 600px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-    }
-
-    p {
-        margin: 5px 0;
-    }
-
-    form {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    button {
-        background-color: black;
-        color: yellow;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: yellow;
-        color: black;
-    }
-</style>
-</head>
 <body>
     <h1>Carrito de Compras</h1>
-    <ul>
-        {% for producto in productos %}
-            <li>
-                <h2>{{ producto['nombre'] }}</h2>
-                <p>Precio por unidad: ${{ producto['precio'] }}</p>
-                <p>Precio total de compra: ${{ producto['precio_total'] }}</p>
-                <p>Cantidad: {{ producto['cantidad'] }}</p>
-                <form method="POST" action="/actualizar_carrito">
-                    <input type="hidden" name="producto_id" value="{{ producto['id'] }}">
-                    <button type="submit" name="action" value="sumar">Añadir otro</button>
-                    <button type="submit" name="action" value="restar">Eliminar uno</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio Unitario</th>
+                <th>Cantidad</th>
+                <th>Precio Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto.nombre }}</td>
+                <td>${{ producto.precio }}</td>
+                <td>{{ producto.cantidad }}</td>
+                <td>${{ producto.precio_total }}</td>
+                <td>
+                    <form method="POST" action="/actualizar_carrito">
+                        <input type="hidden" name="producto_id" value="{{ producto.nombre }}">
+                        <input type="hidden" name="action" value="sumar">
+                        <button type="submit" name="action" value="sumar">+</button>
+                    </form>
+                    <form method="POST" action="/actualizar_carrito">
+                        <input type="hidden" name="producto_id" value="{{ producto.nombre }}">
+                        <input type="hidden" name="action" value="restar">
+                        <button type="submit" name="action" value="restar">-</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Total: ${{ precio_total_carrito }}</p>
+
+    <a href="/">Volver a la tienda</a>
 </body>
 </html>

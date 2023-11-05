@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -25,13 +26,7 @@
                 <li><a href="#Menu">Menu</a></li>
                 <li><a href="#Galeria">Galería</a></li>
                 <li><a href="#Reseña">Reseña</a></li>
-                <li class="carrito">
-                    <a href="{{ url_for('ver_carrito') }}" id="ver_carrito">Carrito de Compras</a>
-                    <ul id="carrito-list">
-                        <!-- Elementos del carrito se agregan aquí -->
-                    </ul>
-                    <p>Total: <span id="carrito-total">0</span></p>
-                </li>
+                
             </ul>
             
                 
@@ -39,7 +34,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <i class="fa-solid fa-heart"></i>
                 <i class="fa-solid fa-cart-shopping" id="carrito_compras"></i>
-                <a href="carrito.html">Finalizar Compra</a>
+                <a href="{{ url_for('ver_carrito') }}">Finalizar Compra</a>
             </div>
         </nav>
 
@@ -121,14 +116,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
-                    </div>
-                    <!-- Formulario para agregar al carrito -->
-                    <form action="{{ url_for('agregar_al_carrito', producto_id=1) }}" method="POST">
-                        <input type="hidden" name="producto" value="Hamburguesas">
-                        <input type="hidden" name="precio" value="3000">
-                        <button type="submit">Agregar al carrito</button>
-                    </form>
                     
+                    <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Hamburguesas/1">
+                        <input type="hidden" name="producto_id" value="Hamburguesas">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('hamburguesas', 1)">Agregar al carrito</button>
+                    </form>                    
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + nombre_producto + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>    
+                    </div>                   
                 </div>
             </div>
             <div class="menu_card">
@@ -154,8 +164,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                    <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Pizzas/2">
+                        <input type="hidden" name="producto_id" value="Pizzas">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Pizzas', 2)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script> 
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -181,8 +212,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Pastas/3">
+                        <input type="hidden" name="producto_id" value="Pastas">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Pastas', 3)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script> 
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -207,8 +259,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                            <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Parrillada/4">
+                        <input type="hidden" name="producto_id" value="Parrillada">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Parrillada', 4)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script> 
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -234,8 +307,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Tabla/5">
+                        <input type="hidden" name="producto_id" value="Tabla">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Tabla', 5)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -260,8 +354,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Ensaladas/6">
+                        <input type="hidden" name="producto_id" value="Ensaladas">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Ensaladas', 6)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -286,8 +401,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Pescados/7">
+                        <input type="hidden" name="producto_id" value="Pescados">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Pescados', 7)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -312,8 +448,29 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Pizzanesas/8">
+                        <input type="hidden" name="producto_id" value="Pizzanesas">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Pizzanesas', 8)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>
             </div>
             <div class="menu_card">
@@ -338,6 +495,28 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Empanadas/9">
+                        <input type="hidden" name="producto_id" value="Empanadas">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Empanadas', 9)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
                     <a href="#" class="menu_btn">Order Now</a>
                 </div>
@@ -364,6 +543,28 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Tostados/10">
+                        <input type="hidden" name="producto_id" value="Tostados">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Tostados', 10)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
                     <a href="#" class="menu_btn">Order Now</a>
                 </div>
@@ -390,6 +591,28 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <!-- Formulario para agregar al carrito -->
+                    <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Lomo/11">
+                        <input type="hidden" name="producto_id" value="Lomo">
+                        <input type="hidden" name="action" value="agregar">
+                        <button type="submit" class="icon-btn" onclick="actualizarCantidad('Lomo', 11)">Agregar al carrito</button>
+                    </form>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <!-- Formulario para agregar al carrito (index.html) -->
+                    <script>
+                        function actualizarCantidad(nombre_producto, producto_id) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                success: function(response) {
+                                    // Recarga la página del carrito para reflejar los cambios
+                                },
+                                error: function() {
+                                    // Manejar errores si es necesario
+                                }
+                            });
+                        }
+                    </script>
                     </div>
                     <a href="#" class="menu_btn">Order Now</a>
                 </div>
@@ -416,8 +639,28 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star-half-stroke"></i>
+                        <form id="agregar-carrito-form-hamburguesas" method="POST" action="/agregar_al_carrito/Pollo/12">
+                            <input type="hidden" name="producto_id" value="Pollo">
+                            <input type="hidden" name="action" value="agregar">
+                            <button type="submit" class="icon-btn" onclick="actualizarCantidad('Pollo', 12)">Agregar al carrito</button>
+                        </form>
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <!-- Formulario para agregar al carrito (index.html) -->
+                        <script>
+                            function actualizarCantidad(nombre_producto, producto_id) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/agregar_al_carrito/' + producto_id, // Utiliza la URL correcta para agregar al carrito
+                                    success: function(response) {
+                                        // Recarga la página del carrito para reflejar los cambios
+                                    },
+                                    error: function() {
+                                        // Manejar errores si es necesario
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
-                    <a href="#" class="menu_btn">Order Now</a>
                 </div>               
             </div> <!--Fin Menu Card-->
         </div> <!--Fin Menu Box-->
@@ -437,7 +680,6 @@
                     Una costilla de cerdo tierna y caramelizada se sirve con un puré mixto de coliflor y patatas, en una
                     combinación de sabores y texturas exquisitas.
                 </p>
-                <a href="#" class="gallary_btn">Orde Now</a>
             </div>
 
             <div class="gallary_image">
@@ -448,7 +690,6 @@
                     Guisado de cangrejo sublime, con la carne de cangrejo en su punto más jugoso y tierno, se sirve con
                     un puré mixto de coliflor y patatas, creando una fusión de sabores y texturas extraordinaria.
                 </p>
-                <a href="#" class="gallary_btn">Orde Now</a>
             </div>
 
             <div class="gallary_image">
@@ -459,7 +700,6 @@
                     Un lujoso salmón a la parrilla, con su piel crujiente y su carne jugosa, se presenta junto a unas
                     batatas asadas, combinando sabores y texturas en una experiencia gastronómica excepcional.
                 </p>
-                <a href="#" class="gallary_btn">Orde Now</a>
             </div>
 
             <div class="gallary_image">
@@ -470,7 +710,6 @@
                     Una paella gourmet con arroz perfectamente cocido y una variedad de mariscos, acompañada de verduras
                     frescas y el distintivo toque de azafrán.
                 </p>
-                <a href="#" class="gallary_btn">Orde Now</a>
             </div>
 
             <div class="gallary_image">
@@ -482,7 +721,6 @@
                     excepcionales, desde trufa negra hasta jamón de Parma, creando una explosión de sabores y texturas
                     en cada bocado.
                 </p>
-                <a href="#" class="gallary_btn">Orde Now</a>
             </div>
 
             <div class="gallary_image">
@@ -493,7 +731,6 @@
                     Un ramen gourmet con fideos en caldo aromático y ingredientes de alta calidad como cerdo y huevo,
                     ofrece una experiencia de sabor excepcional.
                 </p>
-                <a href="#" class="gallary_btn">Orde Now</a>
             </div>
         </div>
     </div> <!--Fin Galería-->
