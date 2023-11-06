@@ -65,7 +65,7 @@ def ver_carrito():
         elif producto_nombre == "Parrillada":
             producto_id = 4
             precio_producto = 9000
-        elif producto_nombre == "Tabla":
+        elif producto_nombre == "Tablas":
             producto_id = 5
             precio_producto = 8000
         elif producto_nombre == "Ensaladas":

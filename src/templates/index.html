@@ -31,7 +31,6 @@
             
                 
             <div id="carrito_contenedor">
-                <i class="fa-solid fa-magnifying-glass"></i>
                 <i class="fa-solid fa-heart"></i>
                 <i class="fa-solid fa-cart-shopping" id="carrito_compras"></i>
                 <a href="{{ url_for('ver_carrito') }}">Ver carrito</a>
@@ -58,7 +57,7 @@
         </p>
 
         <div class="main_btn">
-            <a href="#">Order Now</a>
+            <a href="#Menu">Order Now</a>
             <i class="fa-solid fa-angle-right"></i>
         </div>
 
@@ -80,7 +79,7 @@
                     acogedor y un servicio excepcional. Ven y disfruta de momentos especiales con nosotros.
                 </p>
                 
-                <a href="#" class="about_btn">Order Now</a>
+                <a href="#Menu" class="about_btn">Order Now</a>
             </div>
 
             
@@ -324,8 +323,8 @@
                         <i class="fa-solid fa-star-half-stroke"></i>
                         <!-- Formulario para agregar al carrito -->
                     <!-- Formulario para agregar al carrito -->
-                    <form id="agregar-carrito-form-tabla" onsubmit="return agregarAlCarrito('Tabla', 5)">
-                        <input type="hidden" name="producto_id" value="Tabla">
+                    <form id="agregar-carrito-form-tablas" onsubmit="return agregarAlCarrito('Tablas', 5)">
+                        <input type="hidden" name="producto_id" value="Tablas">
                         <input type="hidden" name="action" value="agregar">
                         <button type="submit" class="icon-btn">Agregar al carrito</button>
                     </form>
