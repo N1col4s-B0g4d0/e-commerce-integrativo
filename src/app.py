@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, m
 from flask_wtf import FlaskForm
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.utils import secure_filename
 from wtforms import StringField, SelectField
 from config import config
 import json
@@ -156,17 +157,30 @@ def ver_carrito():
                             item['cantidad'] -= 1
 
     precio_total_carrito = sum(item['precio_total'] for item in productos_en_carrito)
+    # Convierte productos_en_carrito en una cadena JSON
+    productos_en_carrito_json = json.dumps(productos_en_carrito)
+    
+    estado_carrito = 0
 
+    cur=db.connection.cursor()
+    cur.execute("INSERT INTO `clientes` (`pedido_carrito`, `total_precio`, `estado_carrito`) VALUES (%s,%s,%s)",(productos_en_carrito, precio_total_carrito, estado_carrito))
+    cur.execute("SELECT LAST_INSERT_ID()")
+    id_carrito = cur.fetchone()[0]
+    session['id_carrito'] = id_carrito# Almacena el ID del carrito en la sesión
+    session['precio_total_carrito'] = precio_total_carrito
+    db.connection.commit()
+    cur.close()
+    # agrego a clientes estado del carrito, y guardo un boolean
+    # id = id
     return render_template('ver_carrito.html', productos=productos_en_carrito, precio_total_carrito=precio_total_carrito)
 
 
 @app.route('/actualizar_carrito', methods=['POST'])
 def actualizar_carrito():
-    nombre_producto = request.form.get('producto_id')  # Recibe el nombre del producto como cadena
+    nombre_producto = request.form.get('producto_id')  # Recibo el nombre del producto como cadena
     action = request.form.get('action')
 
     if nombre_producto:
-        # Encuentra el producto en el carrito por su nombre
         producto_existente = next((producto for producto in carrito if producto['nombre'] == nombre_producto), None)
 
         if producto_existente:
@@ -175,7 +189,6 @@ def actualizar_carrito():
             elif action == 'restar' and producto_existente['cantidad'] > 0:
                 producto_existente['cantidad'] -= 1
 
-    # Redirige de nuevo a la página del carrito
     return redirect('/ver_carrito')
 
 
@@ -196,28 +209,57 @@ class Checkout(FlaskForm):
     
 
 @app.route('/checkout', methods=['GET','POST'])
-def checkout():
+def checkout():         
     form = Checkout()
-    if request.method == 'POST':
-            first_name = form.first_name.data
-            last_name = form.last_name.data
-            phone_number = form.phone_number.data
-            email = form.email.data
-            address = form.address.data
-            cur=db.connection.cursor()
-            cur.execute("INSERT INTO `clientes` (`nombre`, `apellido`, `telefono`, `email`, `direccion`) VALUES (%s,%s,%s,%s,%s) WHERE 1",(first_name, last_name, phone_number, email, address))
+    first_name = form.first_name.data
+    last_name = form.last_name.data
+    phone_number = form.phone_number.data
+    email = form.email.data
+    address = form.address.data
+    
+    precio_total_carrito = session.get('precio_total_carrito')
+    
+    return render_template('checkout.html', form=form, precio_total_carrito=precio_total_carrito)
+
+
+@app.route('/procesar_pago', methods=['POST'])
+def procesar_pago():
+    form = Checkout()
+    id_carrito = session.get('id_carrito')
+
+    # Verifica si se envió un archivo y lo procesa
+    if 'archivosubido' in request.files:
+        archivo = request.files['archivosubido']
+        if archivo.filename != '':
+            contenido_archivo = archivo.read()# Convierte el archivo a una secuencia de bytes (bytes)
+            cur = db.connection.cursor()
+            cur.execute("UPDATE `clientes` SET `ticket` = %s WHERE id = %s", (contenido_archivo, id_carrito))
             db.connection.commit()
             cur.close()
-            carrito.clear()           
+            
 
-    return render_template('checkout.html', form=form)
+    # Actualizar la base de datos con los datos del cliente
+    if request.method == 'POST':
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        phone_number = form.phone_number.data
+        email = form.email.data
+        address = form.address.data
+        cur = db.connection.cursor()
+        query = "UPDATE `clientes` SET `nombre`=%(first_name)s, `apellido`=%(last_name)s, `telefono`=%(phone_number)s, `email`=%(email)s, `direccion`=%(address)s WHERE id=%(id_carrito)s"
+        data = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'phone_number': phone_number,
+            'email': email,
+            'address': address,
+            'id_carrito': id_carrito
+        }
+        cur.execute(query, data)
+        db.connection.commit()
+        cur.close()
+        carrito.clear()
 
-
-@app.route('/procesar_pago', methods=['GET','POST'])
-def procesar_pago():
-    # Aquí procesas el pago y realizas cualquier acción necesaria
-    
-    # Luego, redirige al usuario a la página principal con un mensaje
     mensaje = "Compra exitosa. En unos minutos confirmaremos su compra a través de mensaje de WhatsApp."
     return redirect(url_for('home', mensaje=mensaje))   
 """
