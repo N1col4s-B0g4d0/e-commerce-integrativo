@@ -1,12 +1,50 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response
+from flask import Flask, request, jsonify, render_template, redirect, url_for, make_response, session
+from flask_wtf import FlaskForm
+from flask_mysqldb import MySQL
+from flask_wtf.csrf import CSRFProtect
+from wtforms import StringField, SelectField
+from config import config
 import json
-
+import mercadopago
+import secrets # libreria para crear claves seguras CSRF Token
+ 
 app = Flask(__name__)
+db = MySQL(app)
+
+app.config['SECRET_KEY'] = '7811cb752097e9ea4a8ca184582ef8649a27aaab6648fc41' #clave secreta CSRF Token
+# token de mercado pago
+sdk = mercadopago.SDK("TEST-5622517270371211-101721-e12ed1d760b7ca0ff3573b39953fddb9-144586495")
+ACCESS_TOKEN = "TEST-5622517270371211-101721-e12ed1d760b7ca0ff3573b39953fddb9-144586495"
+
 carrito = []
+productos_para_preferencia = []
+precio_total_carrito = 0
+
+
+# Crea ítems en la preferencia
+preference_data = {
+    "items": [
+        {
+            "title": "Mi producto",
+            "quantity": 1,
+            "unit_price": 75.56
+        },
+        {
+            "title": "Mi producto2",
+            "quantity": 2,
+            "unit_price": 96.56
+        }
+    ]
+}
+
+# Crea la preferencia
+preference_response = sdk.preference().create(preference_data)
+preference = preference_response["response"]
 
 @app.route('/', methods=['GET','POST'])
 def home():
-    return render_template('index.html')
+    mensaje = request.args.get('mensaje')
+    return render_template('index.html', mensaje=mensaje)
 
 @app.route('/agregar_al_carrito/<string:nombre_producto>/<int:producto_id>', methods=['POST'])
 def agregar_al_carrito(nombre_producto, producto_id):
@@ -147,5 +185,93 @@ def eliminar_del_carrito(producto_id):
         del carrito[producto_id]
     return render_template('carrito.html', cart=carrito)
 
+
+class Checkout(FlaskForm):
+    first_name = StringField('First Name')
+    last_name = StringField('Last Name')
+    phone_number = StringField('Number')
+    email = StringField('Email')
+    address = StringField('Address')
+    
+    
+
+@app.route('/checkout', methods=['GET','POST'])
+def checkout():
+    form = Checkout()
+    if request.method == 'POST':
+            first_name = form.first_name.data
+            last_name = form.last_name.data
+            phone_number = form.phone_number.data
+            email = form.email.data
+            address = form.address.data
+            cur=db.connection.cursor()
+            cur.execute("INSERT INTO `clientes` (`nombre`, `apellido`, `telefono`, `email`, `direccion`) VALUES (%s,%s,%s,%s,%s) WHERE 1",(first_name, last_name, phone_number, email, address))
+            db.connection.commit()
+            cur.close()
+            carrito.clear()           
+
+    return render_template('checkout.html', form=form)
+
+
+@app.route('/procesar_pago', methods=['GET','POST'])
+def procesar_pago():
+    # Aquí procesas el pago y realizas cualquier acción necesaria
+    
+    # Luego, redirige al usuario a la página principal con un mensaje
+    mensaje = "Compra exitosa. En unos minutos confirmaremos su compra a través de mensaje de WhatsApp."
+    return redirect(url_for('home', mensaje=mensaje))   
+"""
+@app.route('/obtener_preference_id', methods=['POST'])
+def obtener_preference_id():
+    # Configurar tus credenciales de Mercado Pago
+    mp = mercadopago.SDK(ACCESS_TOKEN)
+
+    # Obtener la información del carrito
+    carrito = session.get('carrito', [])
+    precio_total_carrito = session['precio_total_carrito']
+
+    # Crear una lista de items para la preferencia
+    items = []
+    # Calcular el precio total del carrito
+    precio_total_carrito = sum(item['precio_total'] for item in carrito)
+
+    for producto in carrito:
+        item = {
+            "title": producto['nombre'],  
+            "quantity": producto['cantidad'],  
+            
+        }   
+        
+        items.append(item)
+        
+
+    # Crear la preferencia de pago con la lista de items
+    preference_data = {
+        "items": items,
+        "back_urls": {
+            "success": "URL_DE_EXITO",
+            "failure": "URL_DE_FALLA",
+        },
+        "total_amount": precio_total_carrito,
+    }
+
+    preference = mp.preference().create(preference_data)
+    print(preference)
+
+    if 'response' in preference and 'id' in preference['response']:
+        preference_id = preference['response']['id']
+        return jsonify({'preferenceId': preference_id})
+    else:
+        return jsonify({'error': 'No se pudo obtener el preferenceId'})
+
+    return jsonify({'preferenceId': preference_id})
+
+
+# Genera una cadena segura de 24 bytes
+# clave_secreta = secrets.token_hex(24)
+# print(clave_secreta)
+"""
 if __name__ == '__main__':
+    app.config.from_object(config['development'])
     app.run(debug=True)
+    csrf.init_app(app)
