@@ -47,6 +47,7 @@ def home():
     mensaje = request.args.get('mensaje')
     return render_template('index.html', mensaje=mensaje)
 
+
 @app.route('/agregar_al_carrito/<string:nombre_producto>/<int:producto_id>', methods=['POST'])
 def agregar_al_carrito(nombre_producto, producto_id):
     # Verifica si el producto ya está en el carrito
@@ -58,7 +59,6 @@ def agregar_al_carrito(nombre_producto, producto_id):
         # Agrega el producto al carrito si no existe
         carrito.append({'nombre': nombre_producto, 'producto_id': producto_id, 'cantidad': 1})
 
-    print(carrito)
     # Redirige de nuevo a la página del carrito
     return redirect('/ver_carrito')
 
@@ -221,7 +221,7 @@ def checkout():
     
     return render_template('checkout.html', form=form, precio_total_carrito=precio_total_carrito)
 
-
+# pasar de 0 a 1
 @app.route('/procesar_pago', methods=['POST'])
 def procesar_pago():
     form = Checkout()
