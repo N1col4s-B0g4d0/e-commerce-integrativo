@@ -35,3 +35,18 @@ Frontend: La aplicación web utiliza HTML, CSS y JavaScript para la interfaz de 
 Backend: El servidor está construido en Python y utiliza una base de datos MySQL gestionar pedidos y reservas.
 
 Dependencias: Se requieren varias bibliotecas y módulos adicionales. Consulta el archivo package.json para obtener una lista completa.
+
+# Capturas
+![Resto Bar - Google Chrome 10_11_2023 18_04_07](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/0168a796-5d9b-47ed-ab46-5577c1b9c159)
+![Resto Bar - Google Chrome 10_11_2023 18_04_26](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/2a7fe746-dee5-49f3-855e-c3c4edb87810)
+![Resto Bar - Google Chrome 10_11_2023 18_04_35](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/11db8dc1-6e40-4381-9587-69912ade9b0c)
+![Resto Bar - Google Chrome 10_11_2023 18_04_54](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/0535b34b-7748-4d92-b582-b097b04c6c61)
+![Carrito de Compras - Google Chrome 10_11_2023 18_05_03](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/6db5e77c-cf34-45b6-bb3f-641f7a453200)
+![Carrito de Compras - Google Chrome 10_11_2023 18_05_12](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/150ce334-75b6-4fd6-a961-6b0cadab0162)
+![Carrito de Compras - Google Chrome 10_11_2023 18_05_23](https://github.com/NicolasBogado/WebPage_Bar/assets/112599449/a095450d-1d94-415e-b9a9-16e72ed6e2b0)
+
+
+
+
+
+
